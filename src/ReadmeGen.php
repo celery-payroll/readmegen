@@ -72,9 +72,9 @@ class ReadmeGen
 
         $localConfigPath = realpath($this->defaultConfigPath);
 
-        // Merging local config
+        // We are not merging anymore, if local config exists then use that one.
         if (file_exists($localConfigPath) && false === $ignoreLocalConfig) {
-            $this->config = $this->configLoader->get($localConfigPath, $this->defaultConfig);
+            $this->config = $this->configLoader->get($localConfigPath);
         }
         else {
             $this->config = $this->defaultConfig;
