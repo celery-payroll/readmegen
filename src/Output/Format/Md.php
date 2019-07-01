@@ -1,6 +1,7 @@
 <?php namespace ReadmeGen\Output\Format;
 
 use ReadmeGen\Vcs\Type\AbstractType as VCS;
+use ReadmeGen\Vcs\Type\AbstractType;
 
 class Md implements FormatInterface
 {
@@ -73,10 +74,64 @@ class Md implements FormatInterface
     public function decorate()
     {
         foreach ($this->log as &$entries) {
+            array_walk($entries, array($this, 'extractIssuesFromBody'));
+        }
+
+        foreach ($this->log as &$entries) {
             array_walk($entries, array($this, 'injectLinks'));
         }
 
+        foreach ($this->log as &$entries) {
+            array_walk(
+                $entries,
+                function(&$entry){
+                    $entry = ucfirst($entry);
+                }
+            );
+        }
+
         return $this->log;
+    }
+
+    /**
+     * Extract issue references from the commit body and add them to the subject.
+     *
+     * @param string $entry Log entry.
+     */
+    protected function extractIssuesFromBody(&$entry)
+    {
+        $subjectAndBody = explode(AbstractType::SUBJECT_SEPARATOR, $entry);
+        if (count($subjectAndBody) > 1) {
+            $entry = $subjectAndBody[0];
+
+            $issuesInSubject = $this->extractIssues($subjectAndBody[0]);
+            $issuesInBody = $this->extractIssues($subjectAndBody[1]);
+            $issues = array_diff($issuesInBody, $issuesInSubject);
+
+            if (count($issues) > 0) {
+                $addToSubject = " (" . implode("), (", $issues) . ")";
+
+                $entry .= $addToSubject;
+            }
+        }
+    }
+
+    /**
+     * Extract any issue references from a string.
+     *
+     * @param string $entry
+     * @return array
+     */
+    protected function extractIssues($entry)
+    {
+        $arrReturn = [];
+
+        preg_match_all('/#\d+/', $entry, $issues);
+        if (count($issues[0]) > 0) {
+            $arrReturn = $issues[0];
+        }
+
+        return $arrReturn;
     }
 
     /**
