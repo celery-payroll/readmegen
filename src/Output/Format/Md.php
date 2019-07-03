@@ -82,12 +82,7 @@ class Md implements FormatInterface
         }
 
         foreach ($this->log as &$entries) {
-            array_walk(
-                $entries,
-                function(&$entry){
-                    $entry = ucfirst($entry);
-                }
-            );
+            array_walk($entries, array($this, 'prepareScope'));
         }
 
         return $this->log;
@@ -113,6 +108,24 @@ class Md implements FormatInterface
 
                 $entry .= $addToSubject;
             }
+        }
+    }
+
+    /**
+     * Prepare the optional scope on a commit message.
+     *
+     * @param string $entry Log entry.
+     */
+    protected function prepareScope(&$entry)
+    {
+        $scopeAndSubject = explode(AbstractType::SCOPE_SEPARATOR, $entry);
+        if (count($scopeAndSubject) > 1) {
+            $scope = $scopeAndSubject[0];
+            $subject = $scopeAndSubject[1];
+
+            $entry = "**" . ucfirst($scope) . "**: " . ucfirst($subject);
+        } else {
+            $entry = ucfirst($entry);
         }
     }
 
