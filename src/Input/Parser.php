@@ -1,12 +1,15 @@
-<?php namespace ReadmeGen\Input;
+<?php
 
-use Ulrichsg\Getopt\Getopt;
-use Ulrichsg\Getopt\Option;
+namespace ReadmeGen\Input;
+
+use GetOpt\GetOpt;
+use GetOpt\Option;
 
 /**
  * Input parser.
  *
  * Class Parser
+ *
  * @package ReadmeGen\Input
  */
 class Parser
@@ -24,11 +27,11 @@ class Parser
      * @var string
      */
     protected $input;
-    
+
     public function __construct()
     {
         // Register possible input arguments.
-        $this->handler = new Getopt(array(
+        $this->handler = new GetOpt(array(
             new Option('r', 'release', Getopt::REQUIRED_ARGUMENT),
             new Option('f', 'from', Getopt::REQUIRED_ARGUMENT),
             new Option('t', 'to', Getopt::OPTIONAL_ARGUMENT),
@@ -44,9 +47,9 @@ class Parser
     public function setInput($input)
     {
         $inputArray = explode(' ', $input);
-        
+
         array_shift($inputArray);
-        
+
         $this->input = join(' ', $inputArray);
     }
 
@@ -68,7 +71,7 @@ class Parser
         if (false === isset($output['release'])) {
             throw new \BadMethodCallException('The --release argument is required.');
         }
-        
+
         return $this->handler;
     }
 }
