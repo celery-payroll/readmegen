@@ -17,7 +17,7 @@ class Parser
     /**
      * CLI input parser.
      *
-     * @var Getopt
+     * @var GetOpt
      */
     protected $handler;
 
@@ -60,7 +60,7 @@ class Parser
      */
     public function parse()
     {
-        $this->handler->parse($this->input);
+        $this->handler->process($this->input);
 
         $output = $this->handler->getOptions();
 
