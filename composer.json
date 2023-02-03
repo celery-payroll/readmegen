@@ -11,10 +11,10 @@
     ],
     "require": {
         "symfony/yaml": "^5.0",
-        "ulrichsg/getopt-php": "3.*"
+        "ulrichsg/getopt-php": "4.*"
     },
     "require-dev": {
-        "phpspec/phpspec": "^6.0"
+        "phpspec/phpspec": "^7.0"
     },
     "config": {
         "bin-dir": "bin"
