@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "symfony/yaml": "^5.0",
+        "symfony/yaml": "^7",
         "ulrichsg/getopt-php": "4.*"
     },
     "require-dev": {
