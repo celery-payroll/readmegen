@@ -41,6 +41,20 @@ class Md implements FormatInterface
     protected $date;
 
     /**
+     * Whether to ensure unique issues across entries.
+     *
+     * @var bool
+     */
+    protected $uniqueIssues = false;
+
+    /**
+     * Tracks issues seen across all entries (for unique_issues feature).
+     *
+     * @var array
+     */
+    protected $seenIssues = [];
+
+    /**
      * Log setter.
      *
      * @param array $log
@@ -67,14 +81,38 @@ class Md implements FormatInterface
     }
 
     /**
+     * Unique issues flag setter.
+     *
+     * @param bool $uniqueIssues
+     * @return $this
+     */
+    public function setUniqueIssues($uniqueIssues)
+    {
+        $this->uniqueIssues = (bool) $uniqueIssues;
+
+        return $this;
+    }
+
+    /**
      * Decorates the output (e.g. adds linkgs to the issue tracker)
      *
      * @return self
      */
     public function decorate()
     {
+        // Reset seen issues at the start of each decoration run
+        $this->seenIssues = [];
+
         foreach ($this->log as &$entries) {
             array_walk($entries, array($this, 'extractIssuesFromBody'));
+        }
+
+        // If unique_issues is enabled, remove entries with duplicate issues
+        if ($this->uniqueIssues) {
+            foreach ($this->log as &$entries) {
+                array_walk($entries, array($this, 'deduplicateIssuesAcrossEntries'));
+            }
+            $this->filterEmptyEntries();
         }
 
         foreach ($this->log as &$entries) {
@@ -145,6 +183,47 @@ class Md implements FormatInterface
         }
 
         return $arrReturn;
+    }
+
+    /**
+     * Remove entries that contain issues already seen in higher-priority groups.
+     *
+     * @param string $entry Log entry (passed by reference).
+     */
+    protected function deduplicateIssuesAcrossEntries(&$entry)
+    {
+        $issuesInEntry = $this->extractIssues($entry);
+
+        // Check if any issue in this entry was already seen
+        foreach ($issuesInEntry as $issue) {
+            if (in_array($issue, $this->seenIssues)) {
+                // Mark entry for removal by setting to empty
+                $entry = '';
+                return;
+            }
+        }
+
+        // No duplicates found, track all issues as seen
+        foreach ($issuesInEntry as $issue) {
+            $this->seenIssues[] = $issue;
+        }
+    }
+
+    /**
+     * Filter out empty entries from the log after deduplication.
+     */
+    protected function filterEmptyEntries()
+    {
+        foreach ($this->log as $group => &$entries) {
+            $entries = array_values(array_filter($entries, function($entry) {
+                return $entry !== '';
+            }));
+        }
+
+        // Remove empty groups
+        $this->log = array_filter($this->log, function($entries) {
+            return count($entries) > 0;
+        });
     }
 
     /**

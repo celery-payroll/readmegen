@@ -25,4 +25,11 @@ class DecoratorSpec extends ObjectBehavior
         $this->decorate()->shouldReturn('foo');
     }
 
+    function it_should_pass_unique_issues_to_formatter(FormatInterface $formatter)
+    {
+        $formatter->setUniqueIssues(true)->shouldBeCalled();
+
+        $this->setUniqueIssues(true);
+    }
+
 }

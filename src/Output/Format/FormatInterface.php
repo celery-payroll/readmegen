@@ -63,4 +63,12 @@ interface FormatInterface {
      */
     public function setDate(\DateTime $date);
 
+    /**
+     * Unique issues flag setter.
+     *
+     * @param bool $uniqueIssues
+     * @return mixed
+     */
+    public function setUniqueIssues($uniqueIssues);
+
 } 

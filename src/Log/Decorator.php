@@ -49,6 +49,19 @@ class Decorator
     }
 
     /**
+     * Unique issues flag setter.
+     *
+     * @param bool $uniqueIssues
+     * @return $this
+     */
+    public function setUniqueIssues($uniqueIssues)
+    {
+        $this->formatter->setUniqueIssues($uniqueIssues);
+
+        return $this;
+    }
+
+    /**
      * Returns the decorated log.
      *
      * @return FormatInterface

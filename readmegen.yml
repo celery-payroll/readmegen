@@ -3,6 +3,7 @@ format: md
 issue_tracker_pattern: http://some.issue.tracker.com/\1
 break: "## Changelog"
 output_file_name: "README.md"
+unique_issues: false
 message_groups:
   Added:
     - added

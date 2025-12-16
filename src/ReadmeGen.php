@@ -163,8 +163,11 @@ class ReadmeGen
             return array();
         }
 
+        $uniqueIssues = isset($this->config['unique_issues']) ? $this->config['unique_issues'] : false;
+
         return $this->decorator->setLog($log)
             ->setIssueTrackerUrlPattern($this->config['issue_tracker_pattern'])
+            ->setUniqueIssues($uniqueIssues)
             ->decorate();
     }
 

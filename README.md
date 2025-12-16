@@ -83,6 +83,11 @@ You can override the groups in your custom config file (details below).
 ### Link patterns
 ReadmeGen can link issues to a issue tracker - all numbers starting with `#` will be linked to a website defined in the config under the `issue_tracker_pattern` key. If a commit message has a string `#1234` in it, it will be converted to a link targeting the issue tracker.
 
+### Unique issues
+When the same issue number appears in multiple commits within a release, you may want to show it only once. Set `unique_issues: true` in your config to enable this behavior. When enabled, if an issue (e.g. `#123`) appears in multiple commits, only the first occurrence is kept - the entire commit is removed from lower-priority groups.
+
+Priority is determined by the order of `message_groups` in the config file (top = highest priority). For example, if `#123` appears in both a "Features" commit and a "Bugfixes" commit, and "Features" is listed before "Bugfixes" in the config, the commit will only appear under "Features".
+
 ### Local config
 The default config holds the definitions of commit groups and the issue link pattern. It also specifies which VCS to use and the type of the output file. You can override these settings (project-wide) by creating a `readmegen.yml` file in the root dir of your project. When ReadmeGen will be run it will check if this file exists and merge the settings accordingly.
 
@@ -93,6 +98,7 @@ format: md
 issue_tracker_pattern: http://some.issue.tracker.com/\1
 break: "## Changelog"
 output_file_name: "README.md"
+unique_issues: false
 message_groups:
   Features:
     - feature

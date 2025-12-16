@@ -56,4 +56,91 @@ class MdSpec extends ObjectBehavior
 
         $this->generate()->shouldReturn($result);
     }
+
+    function it_should_not_deduplicate_issues_by_default()
+    {
+        $log = array(
+            'Features' => array(
+                'first feature #123',
+                'second feature #123',
+            ),
+        );
+
+        $this->setLog($log);
+        $this->setIssueTrackerUrlPattern($this->issueTrackerPattern);
+
+        $result = $this->decorate();
+
+        $result['Features'][0]->shouldContain('#123');
+        $result['Features'][1]->shouldContain('#123');
+    }
+
+    function it_should_remove_entire_entry_when_unique_issues_enabled()
+    {
+        $log = array(
+            'Features' => array(
+                'first feature #123',
+                'second feature #123',
+            ),
+        );
+
+        $this->setLog($log);
+        $this->setIssueTrackerUrlPattern($this->issueTrackerPattern);
+        $this->setUniqueIssues(true);
+
+        $result = $this->decorate();
+
+        // First entry should remain
+        $result['Features'][0]->shouldContain('#123');
+        // Second entry should be removed entirely, so only 1 entry remains
+        $result['Features']->shouldHaveCount(1);
+    }
+
+    function it_should_remove_entry_from_lower_priority_group()
+    {
+        $log = array(
+            'Features' => array(
+                'feature #123',
+            ),
+            'Bugfixes' => array(
+                'bugfix #123',
+            ),
+        );
+
+        $this->setLog($log);
+        $this->setIssueTrackerUrlPattern($this->issueTrackerPattern);
+        $this->setUniqueIssues(true);
+
+        $result = $this->decorate();
+
+        // Features entry should remain
+        $result['Features'][0]->shouldContain('#123');
+        // Bugfixes group should be removed entirely (empty)
+        $result->shouldNotHaveKey('Bugfixes');
+    }
+
+    function it_should_remove_entries_with_any_duplicate_issue()
+    {
+        $log = array(
+            'Features' => array(
+                'feature #100 #200',
+                'another #200 #300',
+                'third #100',
+            ),
+        );
+
+        $this->setLog($log);
+        $this->setIssueTrackerUrlPattern($this->issueTrackerPattern);
+        $this->setUniqueIssues(true);
+
+        $result = $this->decorate();
+
+        // First entry keeps both #100 and #200
+        $result['Features'][0]->shouldContain('#100');
+        $result['Features'][0]->shouldContain('#200');
+
+        // Second and third entries are removed because they contain duplicate issues
+        // Only 1 entry should remain
+        $result['Features']->shouldHaveCount(1);
+    }
 }
