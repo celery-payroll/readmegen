@@ -60,7 +60,7 @@ class Md implements FormatInterface
      * @param array $log
      * @return mixed
      */
-    public function setLog(array $log = null)
+    public function setLog(?array $log = null)
     {
         $this->log = $log;
 

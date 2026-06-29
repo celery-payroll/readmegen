@@ -61,7 +61,7 @@ class Parser
      * @param array $options
      * @return $this
      */
-    public function setOptions(array $options = null)
+    public function setOptions(?array $options = null)
     {
         $this->vcs->setOptions($options);
 
@@ -74,7 +74,7 @@ class Parser
      * @param array $arguments
      * @return $this
      */
-    public function setArguments(array $arguments = null)
+    public function setArguments(?array $arguments = null)
     {
         $this->vcs->setArguments($arguments);
 

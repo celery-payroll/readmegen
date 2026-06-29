@@ -25,7 +25,7 @@ interface TypeInterface
      * @param array $options
      * @return mixed
      */
-    public function setOptions(array $options = null);
+    public function setOptions(?array $options = null);
 
     /**
      * Input argument setter.
@@ -33,7 +33,7 @@ interface TypeInterface
      * @param array $arguments
      * @return mixed
      */
-    public function setArguments(array $arguments = null);
+    public function setArguments(?array $arguments = null);
 
     /**
      * Returns true if an option exists.

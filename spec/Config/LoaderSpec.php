@@ -42,7 +42,7 @@ class LoaderSpec extends ObjectBehavior
         $this->get($this->dummyConfigFile)->shouldHaveKey('vcs');
     }
 
-    function getMatchers()
+    function getMatchers(): array
     {
         return array(
             'haveKey' => function($subject, $key) {

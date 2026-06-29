@@ -16,7 +16,7 @@ class Loader
      * @return array
      * @throws \Symfony\Component\Yaml\Exception\ParseException When a parse error occurs.
      */
-    public function get($path, array $sourceConfig = null)
+    public function get($path, ?array $sourceConfig = null)
     {
         $config = Yaml::parse($this->getFileContent($path));
         

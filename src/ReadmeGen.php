@@ -125,7 +125,7 @@ class ReadmeGen
      * @param array $log
      * @return array
      */
-    public function extractMessages(array $log = null)
+    public function extractMessages(?array $log = null)
     {
         if (true === empty($log)) {
             return array();
@@ -157,7 +157,7 @@ class ReadmeGen
      * @param array $log
      * @return array|Output\Format\FormatInterface
      */
-    public function getDecoratedMessages(array $log = null)
+    public function getDecoratedMessages(?array $log = null)
     {
         if (true === empty($log)) {
             return array();
